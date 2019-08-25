@@ -14,6 +14,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private  TextView textView;
     private ImageView imageView;
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    public static final int DOWNLOAD_FAILED = 0, DOWNLOAD_SUCCESS = 1;
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.responseText);
         imageView = findViewById(R.id.imageView);
+        handler=new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case DOWNLOAD_FAILED:
+//                        Toast.makeText(this, "下载失败", Toast.LENGTH_SHORT).show();
+                        break;
+                    case DOWNLOAD_SUCCESS:
+//                        Toast.makeText(this, "下载成功", Toast.LENGTH_SHORT).show();
+                        Bitmap bitmap = (Bitmap) msg.obj;
+                        imageView.setImageBitmap(bitmap);
+                        textView.setText("Got Response");
+//                        activity.imageView.setVisibility(View.VISIBLE);
+//                        activity.imageView.setImageBitmap(bitmap);
+                        break;
+                    default:
+                        super.handleMessage(msg);
+                        break;
+                }
+            }
+        };
     }
 
     public boolean checkPermissionREAD_EXTERNAL_STORAGE(
@@ -168,8 +192,8 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(40, TimeUnit.SECONDS)
+                .readTimeout(180, TimeUnit.SECONDS)
                 .build();
 
         Request request = new Request.Builder()
@@ -195,21 +219,30 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
+                InputStream in = response.body().byteStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(in);
+                Message msg = Message.obtain();
+                msg.obj = bitmap;
+                msg.what = bitmap==null?DOWNLOAD_FAILED:DOWNLOAD_SUCCESS;
+
+                handler.sendMessage(msg);
+//                imageView.setImageBitmap(bitmap);
+//                textView.setText("Got Response");
                 // In order to access the TextView inside the UI thread, the code is executed inside runOnUiThread()
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        TextView responseText = findViewById(R.id.responseText);
-                        try {
-//                            responseText.setText(response.body().string());
-                            InputStream in = response.body().byteStream();
-                            Bitmap bitmap = BitmapFactory.decodeStream(in);
-                            imageView.setImageBitmap(bitmap);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                 });
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+////                        TextView responseText = findViewById(R.id.responseText);
+//                        try {
+////                            responseText.setText(response.body().string());
+//                            InputStream in = response.body().byteStream();
+//                            Bitmap bitmap = BitmapFactory.decodeStream(in);
+//                            imageView.setImageBitmap(bitmap);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                 });
             }
         });
     }
