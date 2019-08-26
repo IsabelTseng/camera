@@ -47,8 +47,10 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     String selectedImagePath;
+    String selectedImagePath2;
     private  TextView textView;
     private ImageView imageView;
+    private ImageView imageView2;
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     public static final int DOWNLOAD_FAILED = 0, DOWNLOAD_SUCCESS = 1;
     Handler handler;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.responseText);
         imageView = findViewById(R.id.imageView);
+        imageView2 = findViewById(R.id.imageView2);
         handler=new Handler() {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -144,12 +147,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectServer(View v){
-        EditText ipv4AddressView = findViewById(R.id.IPAddress);
-        String ipv4Address = ipv4AddressView.getText().toString();
-        EditText portNumberView = findViewById(R.id.portNumber);
-        String portNumber = portNumberView.getText().toString();
+//        EditText ipv4AddressView = findViewById(R.id.IPAddress);
+//        String ipv4Address = ipv4AddressView.getText().toString();
+//        EditText portNumberView = findViewById(R.id.portNumber);
+//        String portNumber = portNumberView.getText().toString();
 
-        String postUrl= "http://"+ipv4Address+":"+portNumber+"/";
+//        String postUrl= "http://"+ipv4Address+":"+portNumber+"/";
+        String postUrl= "http://140.116.245.103:5001/";
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -166,9 +170,21 @@ public class MainActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();
 
+        //style begin
+        Bitmap bitmap2 = BitmapFactory.decodeFile(selectedImagePath2, options);
+        if(bitmap2 == null)
+            Log.e("TAG","style null "+selectedImagePath2);
+//        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+        bitmap2.compress(Bitmap.CompressFormat.JPEG, 100, stream2);
+        byte[] byteArray2 = stream2.toByteArray();
+        //style end
+
         RequestBody postBodyImage = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("image", "androidFlask.jpg", RequestBody.create(MediaType.parse("image/*jpg"), byteArray))
+                .addFormDataPart("content", "content.jpg", RequestBody.create(MediaType.parse("image/*jpg"), byteArray))
+                .addFormDataPart("style", "style.jpg", RequestBody.create(MediaType.parse("image/*jpg"), byteArray2))
                 .build();
 
         TextView responseText = findViewById(R.id.responseText);
@@ -254,17 +270,30 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, 0);
     }
 
+
+    public void selectImage2(View view) {
+        Intent intent = new Intent();
+        intent.setType("*/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
         if(resCode == RESULT_OK && data != null) {
             Uri uri = data.getData();
             if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
                 // do your stuff..
-                imageView.setImageURI(uri);
-                selectedImagePath = getPath(getApplicationContext(), uri);
-                EditText imgPath = findViewById(R.id.imgPath);
-                imgPath.setText(selectedImagePath);
-                Toast.makeText(getApplicationContext(), selectedImagePath, Toast.LENGTH_LONG).show();
+                if(reqCode == 0) {
+                    imageView.setImageURI(uri);
+                    selectedImagePath = getPath(getApplicationContext(), uri);
+                }else{
+                    imageView2.setImageURI(uri);
+                    selectedImagePath2 = getPath(getApplicationContext(), uri);
+                }
+//                EditText imgPath = findViewById(R.id.imgPath);
+//                imgPath.setText(selectedImagePath);
+//                Toast.makeText(getApplicationContext(), selectedImagePath, Toast.LENGTH_LONG).show();
             }
         }
     }

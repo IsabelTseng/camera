@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/imgPath"
-        android:hint="Image Path Appears Here"/>
+    <!--<EditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/imgPath"-->
+        <!--android:hint="Image Path Appears Here"/>-->
 
     <Button
         android:layout_width="match_parent"
@@ -18,40 +18,40 @@
         android:text="Select Image"
         android:onClick="selectImage"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="IPv4 Address" />
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
+        <!--<TextView-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="IPv4 Address" />-->
 
-        <EditText
-            android:id="@+id/IPAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:text="140.116.245.103" />
-    </LinearLayout>
+        <!--<EditText-->
+            <!--android:id="@+id/IPAddress"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="4"-->
+            <!--android:text="140.116.245.103" />-->
+    <!--</LinearLayout>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Port Number" />
-        <EditText
-            android:layout_weight="4"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/portNumber"
-            android:text="5000"/>
-    </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
+        <!--<TextView-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="Port Number" />-->
+        <!--<EditText-->
+            <!--android:layout_weight="4"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:id="@+id/portNumber"-->
+            <!--android:text="5001"/>-->
+    <!--</LinearLayout>-->
 
     <Button
         android:layout_width="match_parent"
@@ -67,6 +67,18 @@
 
     <ImageView
         android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="165dp"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Image"
+        android:onClick="selectImage2"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
